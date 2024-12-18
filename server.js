@@ -279,9 +279,13 @@ passport.deserializeUser(async function (name, done) {
   }
 });
 
-app.get("/dangxuat", function (req, res) {
-  req.logout();
-  res.redirect(req.headers.referer);
+app.get("/dangxuat", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
 });
 
 app.use(function (req, res) {
