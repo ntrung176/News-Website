@@ -1,13 +1,13 @@
 const express = require("express");
-const postModel = require("./models/posts.model");
-const categoryModel = require("./models/category.model");
-const subcategoryModel = require("./models/subcategory.model");
-const _postModel = require("./models/_post.model");
+const postModel = require("../models/posts.model");
+const categoryModel = require("../models/category.model");
+const subcategoryModel = require("../models/subcategory.model");
+const _postModel = require("../models/_post.model");
 const router = express.Router();
 const moment = require("moment");
-const userModel = require("./models/user.model");
+const userModel = require("../models/user.model");
 const multer = require("multer");
-const commentModel = require("./models/comment.model");
+const commentModel = require("../models/comment.model");
 const expressHandlebarsSections = require("express-handlebars-sections");
 
 moment.locale("vi");
