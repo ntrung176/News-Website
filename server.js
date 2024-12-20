@@ -73,8 +73,8 @@ const commentModel = require("./models/comment.model");
 passport.use(
   new FacebookStrategy(
     {
-      clientID: "YOUR_FACEBOOK_APP_ID",
-      clientSecret: "YOUR_FACEBOOK_APP_SECRET",
+      clientID: "1665804734279963",
+      clientSecret: "2a96c85890f0f322ced25d151cb12793",
       callbackURL: "http://localhost:3000/auth/facebook/callback",
       profileFields: ["id", "emails", "name"],
     },
