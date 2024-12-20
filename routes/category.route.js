@@ -1,7 +1,6 @@
 const express = require("express");
-const categoryModel = require("../models/category.model");
-
 const router = express.Router();
+const categoryModel = require("../models/category.model");
 
 router.get("/", async function (req, res) {
   if (req.isAuthenticated() && req.user.Permission === 3) {

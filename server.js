@@ -20,7 +20,7 @@ app.engine(
   "hbs",
   exphbs.engine({
     layoutsDir: "views/_layouts",
-    defaultLayout: "main",
+    defaultLayout: "main.hbs",
     extname: ".hbs",
     helpers: {
       section: hbs_sections(),
@@ -28,7 +28,6 @@ app.engine(
   })
 );
 app.set("view engine", "hbs");
-
 app.set("trust proxy", 1); // trust first proxy
 app.use(
   session({
@@ -279,13 +278,9 @@ passport.deserializeUser(async function (name, done) {
   }
 });
 
-app.get("/dangxuat", (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.redirect("/");
-  });
+app.get("/dangxuat", function (req, res) {
+  req.logout();
+  res.redirect(req.headers.referer);
 });
 
 app.use(function (req, res) {
