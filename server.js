@@ -3,6 +3,7 @@ const session = require("express-session");
 const exphbs = require("express-handlebars");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 const hbs_sections = require("express-handlebars-sections");
 const bcrypt = require("bcryptjs");
 const moment = require("moment");
@@ -67,6 +68,49 @@ const subcategoryModel = require("./models/subcategory.model");
 const postModel = require("./models/posts.model");
 const _postModel = require("./models/_post.model");
 const commentModel = require("./models/comment.model");
+
+// Facebook Login
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: "YOUR_FACEBOOK_APP_ID",
+      clientSecret: "YOUR_FACEBOOK_APP_SECRET",
+      callbackURL: "http://localhost:3000/auth/facebook/callback",
+      profileFields: ["id", "emails", "name"],
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await userModel.singleByFacebookId(profile.id);
+        if (!user) {
+          // Create new user if not found
+          user = {
+            facebookId: profile.id,
+            Email: profile.emails[0].value,
+            Name: `${profile.name.givenName} ${profile.name.familyName}`,
+          };
+          await userModel.addFacebookUser(user);
+          user = await userModel.singleByFacebookId(profile.id);
+        }
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
+    }
+  )
+);
+
+app.get(
+  "/auth/facebook",
+  passport.authenticate("facebook", { scope: ["email"] })
+);
+
+app.get(
+  "/auth/facebook/callback",
+  passport.authenticate("facebook", {
+    successRedirect: "/",
+    failureRedirect: "/dangnhap",
+  })
+);
 
 app.use(async function (req, res, next) {
   const rows = await categoryModel.allforuser();
