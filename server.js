@@ -322,9 +322,13 @@ passport.deserializeUser(async function (name, done) {
   }
 });
 
-app.get("/dangxuat", function (req, res) {
-  req.logout();
-  res.redirect(req.headers.referer);
+app.get("/dangxuat", function (req, res, next) {
+  req.logout(function (err) {
+    if (err) {
+      return next(err); // Chuyển lỗi sang middleware xử lý lỗi
+    }
+    res.redirect(req.headers.referer || "/"); // Chuyển hướng về trang trước hoặc trang chính
+  });
 });
 
 app.use(function (req, res) {
