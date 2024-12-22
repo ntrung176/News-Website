@@ -1,16 +1,34 @@
-{{#section 'title'}}Admin Panel - {{/section}}
+{{#section "title"}}Admin Panel - {{/section}}
 
-<div class="card">
-    <div class="card-header bg-success text-light">
-        <b>ADMIN PANEL</b>
+<div class="container my-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+      <h3 class="mb-0">ADMIN PANEL</h3>
     </div>
-        <a class="list-group-item list-group-item-action" href="/admin/categories">
-        <i class="fas fa-arrow-circle-right"> Quản lý chuyên mục</i> 
+    <div class="card-body">
+      <div class="list-group">
+        <a
+          href="/admin/categories"
+          class="list-group-item list-group-item-action d-flex align-items-center"
+        >
+          <i class="fas fa-folder-open mr-3 text-success"></i>
+          Quản lý chuyên mục
         </a>
-        <a class="list-group-item list-group-item-action" href="/admin/posts">
-        <i class="fas fa-arrow-circle-right"> Quản lý bài đăng</i> 
+        <a
+          href="/admin/posts"
+          class="list-group-item list-group-item-action d-flex align-items-center"
+        >
+          <i class="fas fa-edit mr-3 text-success"></i>
+          Quản lý bài đăng
         </a>
-         <a class="list-group-item list-group-item-action" href="/admin/users">
-        <i class="fas fa-arrow-circle-right"> Quản lý người dùng</i> 
+        <a
+          href="/admin/users"
+          class="list-group-item list-group-item-action d-flex align-items-center"
+        >
+          <i class="fas fa-users mr-3 text-success"></i>
+          Quản lý người dùng
         </a>
+      </div>
+    </div>
+  </div>
 </div>
