@@ -8,6 +8,7 @@ const hbs_sections = require("express-handlebars-sections");
 const bcrypt = require("bcryptjs");
 const moment = require("moment");
 require("express-async-errors");
+require("dotenv").config(); // Đảm bảo rằng bạn đã cài đặt dotenv và nạp các biến môi trường từ file .env
 
 const app = express();
 
@@ -32,7 +33,7 @@ app.set("view engine", "hbs");
 app.set("trust proxy", 1); // trust first proxy
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: process.env.SESSION_SECRET || "keyboard cat", // Đổi bằng biến môi trường
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -51,7 +52,7 @@ app.use(function (req, res, next) {
     res.locals.lcAuthUser = req.user;
     if (req.user.Permission === 3) {
       res.locals.lcAdmin = true;
-    } 
+    }
     if (req.user.Permission === 2) {
       res.locals.lcEditor = true;
     }
@@ -73,9 +74,11 @@ const commentModel = require("./models/comment.model");
 passport.use(
   new FacebookStrategy(
     {
-      clientID: "615446757675443",
-      clientSecret: "bf732161a595168106ddafa901008f74",
-      callbackURL: "http://localhost:3000/auth/facebook/callback",
+      clientID: process.env.FB_CLIENT_ID, // Đổi bằng biến môi trường
+      clientSecret: process.env.FB_CLIENT_SECRET, // Đổi bằng biến môi trường
+      callbackURL:
+        process.env.FB_CALLBACK_URL ||
+        "http://localhost:3000/auth/facebook/callback", // Đổi bằng biến môi trường
       profileFields: ["id", "emails", "name"],
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -289,17 +292,6 @@ app
       successRedirect: "/",
     })
   );
-  app
-  .route("/quenmatkhau")
-  .get(function (req, res) {
-    res.render("_vwAccount/quenmatkhau");
-  })
-  .post(
-    passport.authenticate("local", {
-      failureRedirect: "/quenmatkhau",
-      successRedirect: "/",
-    })
-  );
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {
@@ -351,7 +343,7 @@ app.use(function (err, req, res, next) {
   res.status(500).render("500", { layout: false });
 });
 
-const port = 3000;
+const port = process.env.PORT || 3000; // Sử dụng biến môi trường cho cổng
 app.listen(port, () =>
-  console.log(`Server is running http://localhost:${port}`)
+  console.log(`Server is running on http://localhost:${port}`)
 );
