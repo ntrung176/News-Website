@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const config = require('../config/default.json');
 
 const pool = mysql.createPool(config.mysql);
@@ -52,3 +52,11 @@ module.exports = {
     });
   }
 };
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error('Database connection failed:', err.message);
+  } else {
+    console.log('Connected to MySQL!');
+    connection.release(); // Trả lại kết nối vào pool
+  }
+});

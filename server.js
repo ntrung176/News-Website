@@ -51,7 +51,7 @@ app.use(function (req, res, next) {
     res.locals.lcAuthUser = req.user;
     if (req.user.Permission === 3) {
       res.locals.lcAdmin = true;
-    }
+    } 
     if (req.user.Permission === 2) {
       res.locals.lcEditor = true;
     }
@@ -73,8 +73,8 @@ const commentModel = require("./models/comment.model");
 passport.use(
   new FacebookStrategy(
     {
-      clientID: "1665804734279963",
-      clientSecret: "2a96c85890f0f322ced25d151cb12793",
+      clientID: "615446757675443",
+      clientSecret: "bf732161a595168106ddafa901008f74",
       callbackURL: "http://localhost:3000/auth/facebook/callback",
       profileFields: ["id", "emails", "name"],
     },
@@ -286,6 +286,17 @@ app
   .post(
     passport.authenticate("local", {
       failureRedirect: "/dangnhap",
+      successRedirect: "/",
+    })
+  );
+  app
+  .route("/quenmatkhau")
+  .get(function (req, res) {
+    res.render("_vwAccount/quenmatkhau");
+  })
+  .post(
+    passport.authenticate("local", {
+      failureRedirect: "/quenmatkhau",
       successRedirect: "/",
     })
   );
