@@ -23,9 +23,11 @@ router.get('/', async function (req, res) {
                 const cat_post = await categoryModel.single(categoryManager[i].post[j].CID);
                 categoryManager[i].post[j].CName = cat_post[0].CName;
                 const subcat_post = await subcategoryModel.single2(categoryManager[i].post[j].SCID);
-                if (categoryManager[i].post[j].SCID !== null) {
-                    categoryManager[i].post[j].SCName = ' / '+subcat_post[0].SCName;
-                }
+if (categoryManager[i].post[j].SCID !== null && subcat_post && subcat_post.length > 0) {
+    categoryManager[i].post[j].SCName = ' / ' + subcat_post[0].SCName;
+} else {
+    categoryManager[i].post[j].SCName = ''; // Hoặc một giá trị mặc định nào đó
+}
                 const uid_post = await userModel.singleByUserID(categoryManager[i].post[j].UID);
             }
             categoryManager[i].postchuaduyet = await postModel.singleByCIDStatus(categoryManager[i].CID, 0);

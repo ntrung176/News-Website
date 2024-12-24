@@ -1,0 +1,12 @@
+
+{
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "port":"3306",
+    "password": "01012004",
+    "database": "web_data",
+    "charset": "utf8mb4_general_ci",
+    "connectionLimit": 50
+  }
+}

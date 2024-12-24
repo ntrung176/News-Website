@@ -3,6 +3,7 @@ const postModel = require("../models/posts.model");
 const _postModel = require("../models/_post.model");
 const categoryModel = require("../models/category.model");
 const subcategoryModel = require("../models/subcategory.model");
+const poststatusModel= require("../models/statuspost.model");
 const router = express.Router();
 const path = require('path');
 const fs = require('fs'); 
@@ -153,6 +154,68 @@ router.get("/status/:pid", async function (req, res) {
     res.redirect("/");
   }
 });
+
+router.post("/status/:pid", async function (req, res) {
+  if (req.isAuthenticated() && req.user.Permission > 1) {
+    try {
+      const pid = +req.params.pid || -1; // Lấy ID bài viết từ URL
+      const newStatus = Number(req.body.Duyet); // Chuyển trạng thái từ form thành số
+      const reason = req.body.Reason || ""; // Lý do từ chối (nếu có)
+      const timePublic = req.body.TimePublic || null; // Thời gian xuất bản (nếu có)
+
+      // Kiểm tra nếu trạng thái hợp lệ
+      if (![1, 2].includes(newStatus)) {
+        return res.redirect(`/admin/posts/status/${pid}`);
+      }
+
+      // Lấy bài viết từ DB
+      const post = await postModel.singleByPostID(pid);
+
+      if (!post.length) {
+        return res.redirect("/admin/posts");
+      }
+
+      // Lưu trạng thái vào bảng poststatus
+      const statusEntry = {
+        PostID: pid,
+        Status: newStatus,
+        NameStatus: getStatusName(newStatus),
+        Reason: reason,
+        TimePublic: timePublic,
+      };
+
+      // Thêm bản ghi vào bảng poststatus
+      await poststatusModel.add(statusEntry);
+
+      // Cập nhật trạng thái bài viết trong bảng posts
+      const updatedPost = {
+        Duyet: newStatus,
+        PostID: pid,
+      };
+      await postModel.patch(updatedPost); // Cập nhật trạng thái bài viết
+
+      // Quay lại trang quản lý bài viết
+      res.redirect(`/admin/posts/status/${pid}`);
+    } catch (error) {
+      console.error("Error updating status:", error);
+      res.redirect("/admin/posts");
+    }
+  } else {
+    res.redirect("/");
+  }
+});
+
+// Hàm lấy tên trạng thái từ mã trạng thái
+function getStatusName(status) {
+  switch (status) {
+    case 1:
+      return "Từ chối";
+    case 2:
+      return "Duyệt bài";
+    default:
+      return "Không xác định";
+  }
+}
 router.get("/edit/:pid", async function (req, res) {
   if (req.isAuthenticated() && req.user.Permission > 1) {
     const pid = +req.params.pid || -1;

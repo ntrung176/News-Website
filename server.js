@@ -9,6 +9,8 @@ const bcrypt = require("bcryptjs");
 const moment = require("moment");
 const mysql = require("mysql2");
 require("express-async-errors");
+const userModel = require("News-Website/models/user.model");
+
 require("dotenv").config(); // Đảm bảo rằng bạn đã cài đặt dotenv và nạp các biến môi trường từ file .env
 
 const app = express();
@@ -20,7 +22,12 @@ app.use(
     extended: true,
   })
 );
+<<<<<<< HEAD
 app.use(express.json());
+=======
+app.use(express.json()); 
+
+>>>>>>> df3cdaf (Cập nhật editor,admin, writer)
 
 app.engine(
   "hbs",
@@ -289,8 +296,11 @@ app.use("/writerpanel", writerPanelRouter);
 const editorPanelRouter = require("./routes/editorpanel.route");
 app.use("/editorpanel", editorPanelRouter);
 
+<<<<<<< HEAD
 const userModel = require("./models/user.model");
 
+=======
+>>>>>>> df3cdaf (Cập nhật editor,admin, writer)
 app
   .route("/dangnhap")
   .get(function (req, res) {
@@ -302,6 +312,7 @@ app
       successRedirect: "/",
     })
   );
+<<<<<<< HEAD
 app.use(express.urlencoded({ extended: true }));
 app
   .route("/quenmatkhau")
@@ -349,6 +360,62 @@ app.route("/search").get(function (req, res) {
 app.route("/edit").get(function (req, res) {
   res.render("vwAccount/edit");
 });
+=======
+app.get
+app.get("/quenmatkhau", function (req, res) {
+  // Kiểm tra nếu người dùng đã đăng nhập
+  if (req.isAuthenticated()) {
+    return res.redirect("/");  // Đã đăng nhập, chuyển hướng về trang chủ
+  }
+
+  // Nếu chưa đăng nhập, hiển thị trang quên mật khẩu
+  res.render("_vwAccount/quenmatkhau");
+});
+
+app.post("/quenmatkhau", async (req, res) => {
+  const phone = req.body.phone;  // Số điện thoại người dùng nhập
+  const newPassword = req.body.new_password;  // Mật khẩu mới người dùng nhập
+
+  console.log("Số điện thoại:", phone);  // Kiểm tra xem dữ liệu đã gửi đúng chưa
+  console.log("Mật khẩu mới:", newPassword);
+
+  try {
+    // Tìm người dùng theo số điện thoại
+    const user = await User.singleByPhone(phone);  // Sử dụng hàm singleByPhone để tìm người dùng
+
+    if (!user) {
+      // Nếu không tìm thấy người dùng với số điện thoại này
+      return res.status(400).json({ success: false, message: "Số điện thoại không tồn tại." });
+    }
+
+    // Mã hóa mật khẩu mới trước khi lưu vào cơ sở dữ liệu (nếu cần)
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);  // Sử dụng bcrypt để mã hóa mật khẩu
+
+    // Cập nhật mật khẩu cho người dùng
+    await User.update(
+      { Password_hash: hashedPassword },  // Mật khẩu đã mã hóa
+      { where: { Phone: phone } }         // Cập nhật người dùng có số điện thoại này
+    );
+
+    // Trả về phản hồi thành công
+    return res.json({ success: true, message: "Mật khẩu đã được đặt lại thành công!" });
+  } catch (error) {
+    // Xử lý lỗi nếu có
+    console.error("Error:", error);
+    return res.status(500).json({ success: false, message: "Có lỗi xảy ra, vui lòng thử lại!" });
+  }
+});
+  app
+  .route("/search")
+  .get(function (req, res) {
+    res.render("search");
+  });
+  app
+  .route("/edit")
+  .get(function (req, res) {
+    res.render("vwAccount/edit");
+  });
+>>>>>>> df3cdaf (Cập nhật editor,admin, writer)
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {
@@ -429,6 +496,9 @@ app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).render("500", { layout: false });
 });
+// admin tạo cho editor
+//
+
 
 const port = process.env.PORT;
 app.listen(port, "0.0.0.0", () => {

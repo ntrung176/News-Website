@@ -3,9 +3,15 @@ const mysql = require("mysql2");
 // Cấu hình kết nối từ biến môi trường
 const pool = mysql.createPool({
   host:
+<<<<<<< HEAD
     process.env.DB_HOST || "web-data.cliswaayk6ed.us-east-1.rds.amazonaws.com",
   user: process.env.DB_USER || "admin",
   password: process.env.DB_PASSWORD || "Trung17062003",
+=======
+    process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "01012004",
+>>>>>>> df3cdaf (Cập nhật editor,admin, writer)
   database: process.env.DB_NAME || "web_data",
   waitForConnections: true,
   connectionLimit: 10,

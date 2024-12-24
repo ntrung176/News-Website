@@ -70,36 +70,37 @@
   {{#if this.QEditor}}
   <div class="card-header">
     <strong>Chuyên mục đang quản lý</strong>
-  </div>
-  <div class="card-body">
-    <form action="/admin/users/edit/unsetcate/{{this.user.UserID}}" method="post">
-      {{#each this.categoryManager}}
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="CID" id="{{CName}}" value="{{CID}}">
-        <label class="form-check-label" for="{{CName}}">{{CName}}</label>
-      </div>
-      {{/each}}
-      <p></p>
-      <button class="btn btn-success" type="submit">Lưu</button>
-      <a href="/admin/users" class="btn btn-danger">Quay lại</a>
-    </form>
-  </div>
+</div>
+<div class="card-body">
+  <form action="/admin/users/edit/unsetcate/{{this.user.UserID}}" method="post">
+    {{#each this.categoryManager}}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="CID" id="{{CName}}" value="{{CID}}">
+      <label class="form-check-label" for="{{CName}}">{{CName}}</label>
+    </div>
+    {{/each}}
+    <p></p>
+    <button class="btn btn-success" type="submit">Lưu</button>
+    <a href="/admin/users" class="btn btn-danger">Quay lại</a>
+  </form>
+</div>
 
-  <div class="card-header">
-    <strong>Phân quyền mới</strong>
-  </div>
-  <div class="card-body">
-    <form action="/admin/users/edit/setcate/{{this.user.UserID}}" method="post">
-      {{#each this.category}}
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="CID" id="{{CName}}" value="{{CID}}">
-        <label class="form-check-label" for="{{CName}}">{{CName}}</label>
-      </div>
-      {{/each}}
-      <p></p>
-      <button class="btn btn-success" type="submit">Lưu</button>
-      <a href="/admin/users" class="btn btn-danger">Quay lại</a>
-    </form>
-  </div>
-  {{/if}}
+<div class="card-header">
+  <strong>Phân quyền mới</strong>
+</div>
+<div class="card-body">
+  <form action="/admin/users/edit/setcate/{{this.user.UserID}}" method="post">
+
+    {{#each this.category}} <!-- Hiển thị chuyên mục chưa được phân quyền -->
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="CID" id="{{CName}}" value="{{CID}}">
+      <label class="form-check-label" for="{{CName}}">{{CName}}</label>
+    </div>
+    {{/each}}
+    <p></p>
+    <button class="btn btn-success" type="submit">Lưu</button>
+    <a href="/admin/users" class="btn btn-danger">Quay lại</a>
+  </form>
+</div>
+{{/if}}
 </div>
