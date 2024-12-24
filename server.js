@@ -309,7 +309,7 @@ app
       successRedirect: "/",
     })
   );
-<<<<<<< HEAD
+  app.use(express.urlencoded({ extended: true }));
   app
   .route("/quenmatkhau")
   .get(function (req, res) {
@@ -360,8 +360,6 @@ app
   .get(function (req, res) {
     res.render("vwAccount/edit");
   });
-=======
->>>>>>> 3ff0dd7b20af7807afb81ebb0b24b59ef52e3f38
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {
