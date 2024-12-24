@@ -7,29 +7,20 @@ const FacebookStrategy = require("passport-facebook").Strategy;
 const hbs_sections = require("express-handlebars-sections");
 const bcrypt = require("bcryptjs");
 const moment = require("moment");
-const mysql = require('mysql2');
+const mysql = require("mysql2");
 require("express-async-errors");
 require("dotenv").config(); // Đảm bảo rằng bạn đã cài đặt dotenv và nạp các biến môi trường từ file .env
 
 const app = express();
 
-
 // Kiểm tra và tạo tài khoản admin nếu cần
-
 
 app.use(
   express.urlencoded({
     extended: true,
   })
 );
-app.use(express.json()); 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '01012004',
-  database: 'qltt',
-  charset: 'utf8mb4_general_ci' // Đảm bảo mã hóa utf8mb4
-});
+app.use(express.json());
 
 app.engine(
   "hbs",
@@ -189,14 +180,14 @@ app.get("/", async function (req, res) {
       const cat = await categoryModel.singleByCID(item.CID);
       const subc = await subcategoryModel.single2(item.SCID);
       item.CName = cat.CName;
-    
+
       if (item.SCID !== null && subc.length > 0) {
         item.SCName = subc[0].SCName;
       }
-    
+
       item.Time = moment(item.TimePost, "YYYY-MM-DD hh:mm:ss").fromNow();
     }
-    
+
     // Xóa phần tử có PostID trùng với rows[0].PostID
     for (let i = 0; i < hot.length; i++) {
       if (hot[i].PostID === rows[0].PostID) {
@@ -226,13 +217,16 @@ app.get("/", async function (req, res) {
     for (var i = 0; i < hot10.length; i++) {
       const cat = await categoryModel.singleByCID(hot10[i].CID);
       const subc = await subcategoryModel.single2(hot10[i].SCID);
-    
+
       // Kiểm tra xem subc có hợp lệ hay không
       hot10[i].CName = cat.CName;
       if (hot10[i].SCID !== null && subc && subc.length > 0) {
         hot10[i].SCName = subc[0].SCName; // Gán SCName từ subc nếu subc hợp lệ
       }
-      hot10[i].Time = moment(hot10[i].TimePost, "YYYY-MM-DD hh:mm:ss").fromNow();
+      hot10[i].Time = moment(
+        hot10[i].TimePost,
+        "YYYY-MM-DD hh:mm:ss"
+      ).fromNow();
       if (hot10[i].Premium === 1) {
         hot10[i].Pre = true;
       }
@@ -297,7 +291,6 @@ app.use("/editorpanel", editorPanelRouter);
 
 const userModel = require("./models/user.model");
 
-
 app
   .route("/dangnhap")
   .get(function (req, res) {
@@ -309,8 +302,8 @@ app
       successRedirect: "/",
     })
   );
-  app.use(express.urlencoded({ extended: true }));
-  app
+app.use(express.urlencoded({ extended: true }));
+app
   .route("/quenmatkhau")
   .get(function (req, res) {
     res.render("_vwAccount/quenmatkhau");
@@ -321,45 +314,41 @@ app
       successRedirect: "/",
     })
   );
-  app.post('/quenmatkhau', async (req, res) => {
-    const phone = req.body.phone;          // Số điện thoại người dùng nhập
-    const newPassword = req.body.new_password;  // Mật khẩu mới người dùng nhập
-    console.log('Số điện thoại:', phone); // Kiểm tra xem dữ liệu đã gửi đúng chưa
-    console.log('Mật khẩu mới:', newPassword);
-    // Kiểm tra số điện thoại có tồn tại trong cơ sở dữ liệu không
-    try {
-      const user = await User.findOne({ where: { Phone: phone } });
-      
-      if (!user) {
-        // Nếu không tìm thấy người dùng với số điện thoại này
-        return res.status(400).send('Số điện thoại không tồn tại.');
-      }
-  
-      // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu (nếu cần)
-      const hashedPassword = bcrypt.hashSync(newPassword, 10); // Sử dụng bcrypt hoặc thư viện mã hóa mật khẩu tương tự
-  
-      // Cập nhật mật khẩu cho người dùng
-      await User.update(
-        { Password_hash: hashedPassword }, // Mật khẩu đã mã hóa
-        { where: { Phone: phone } }   // Cập nhật người dùng có số điện thoại này
-      );
-  
-      res.send('Mật khẩu đã được cập nhật thành công.');
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Đã xảy ra lỗi trong quá trình xử lý.');
+app.post("/quenmatkhau", async (req, res) => {
+  const phone = req.body.phone; // Số điện thoại người dùng nhập
+  const newPassword = req.body.new_password; // Mật khẩu mới người dùng nhập
+  console.log("Số điện thoại:", phone); // Kiểm tra xem dữ liệu đã gửi đúng chưa
+  console.log("Mật khẩu mới:", newPassword);
+  // Kiểm tra số điện thoại có tồn tại trong cơ sở dữ liệu không
+  try {
+    const user = await User.findOne({ where: { Phone: phone } });
+
+    if (!user) {
+      // Nếu không tìm thấy người dùng với số điện thoại này
+      return res.status(400).send("Số điện thoại không tồn tại.");
     }
-  });
-  app
-  .route("/search")
-  .get(function (req, res) {
-    res.render("search");
-  });
-  app
-  .route("/edit")
-  .get(function (req, res) {
-    res.render("vwAccount/edit");
-  });
+
+    // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu (nếu cần)
+    const hashedPassword = bcrypt.hashSync(newPassword, 10); // Sử dụng bcrypt hoặc thư viện mã hóa mật khẩu tương tự
+
+    // Cập nhật mật khẩu cho người dùng
+    await User.update(
+      { Password_hash: hashedPassword }, // Mật khẩu đã mã hóa
+      { where: { Phone: phone } } // Cập nhật người dùng có số điện thoại này
+    );
+
+    res.send("Mật khẩu đã được cập nhật thành công.");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Đã xảy ra lỗi trong quá trình xử lý.");
+  }
+});
+app.route("/search").get(function (req, res) {
+  res.render("search");
+});
+app.route("/edit").get(function (req, res) {
+  res.render("vwAccount/edit");
+});
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {
@@ -377,34 +366,36 @@ passport.use(
     delete user.Password_hash;
   })
 );
-app.post('/quenmatkhau', (req, res) => {
+app.post("/quenmatkhau", (req, res) => {
   const { phone, new_password } = req.body;
 
   // Kiểm tra số điện thoại và mật khẩu
   if (!phone || !new_password) {
-    return res.status(400).json({ success: false, message: 'Thiếu thông tin' });
+    return res.status(400).json({ success: false, message: "Thiếu thông tin" });
   }
 
   // Logic cập nhật mật khẩu trong database (giả sử có hàm updatePassword)
   updatePassword(phone, new_password)
-    .then(result => {
+    .then((result) => {
       if (result.success) {
-        return res.json({ success: true, message: 'Mật khẩu đã được thay đổi thành công' });
+        return res.json({
+          success: true,
+          message: "Mật khẩu đã được thay đổi thành công",
+        });
       } else {
-        return res.status(500).json({ success: false, message: 'Có lỗi khi thay đổi mật khẩu' });
+        return res
+          .status(500)
+          .json({ success: false, message: "Có lỗi khi thay đổi mật khẩu" });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
-      return res.status(500).json({ success: false, message: 'Có lỗi xảy ra' });
+      return res.status(500).json({ success: false, message: "Có lỗi xảy ra" });
     });
 });
-app
-.route("/adminpanel")
-.get(function (req, res) {
+app.route("/adminpanel").get(function (req, res) {
   res.render("adminpanel");
 });
-
 
 passport.serializeUser((user, done) => {
   done(null, user.UserName);

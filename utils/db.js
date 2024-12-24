@@ -1,7 +1,10 @@
-const mysql = require('mysql2');
-const config = require('../config/default.json');
+const mysql = require("mysql2");
 
-const pool = mysql.createPool(config.mysql);
+// Tạo pool kết nối sử dụng URI
+const pool = mysql.createPool(
+  process.env.DATABASE_URL ||
+    "mysql://ugimgrju4cbafwyy:yXslDuAqaQLKYc6e0ppF@bvp6hrax9qy5ofayesnc-mysql.services.clever-cloud.com:3306/bvp6hrax9qy5ofayesnc"
+);
 
 module.exports = {
   load: function (sql) {
@@ -50,13 +53,14 @@ module.exports = {
         resolve(results);
       });
     });
-  }
+  },
 };
+
 pool.getConnection((err, connection) => {
   if (err) {
-    console.error('Database connection failed:', err.message);
+    console.error("Database connection failed:", err.message);
   } else {
-    console.log('Connected to MySQL!');
+    console.log("Connected to MySQL using URI!");
     connection.release(); // Trả lại kết nối vào pool
   }
 });
