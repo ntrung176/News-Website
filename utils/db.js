@@ -1,10 +1,16 @@
 const mysql = require("mysql2");
 
-// Tạo pool kết nối sử dụng URI
-const pool = mysql.createPool(
-  process.env.DATABASE_URL ||
-    "mysql://ugimgrju4cbafwyy:yXslDuAqaQLKYc6e0ppF@bvp6hrax9qy5ofayesnc-mysql.services.clever-cloud.com:3306/bvp6hrax9qy5ofayesnc"
-);
+// Cấu hình kết nối từ biến môi trường
+const pool = mysql.createPool({
+  host:
+    process.env.DB_HOST || "web-data.cliswaayk6ed.us-east-1.rds.amazonaws.com",
+  user: process.env.DB_USER || "admin",
+  password: process.env.DB_PASSWORD || "Trung17062003",
+  database: process.env.DB_NAME || "web_data",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
 module.exports = {
   load: function (sql) {
@@ -56,11 +62,12 @@ module.exports = {
   },
 };
 
+// Kiểm tra kết nối
 pool.getConnection((err, connection) => {
   if (err) {
     console.error("Database connection failed:", err.message);
   } else {
-    console.log("Connected to MySQL using URI!");
+    console.log("Connected to MySQL on AWS RDS!");
     connection.release(); // Trả lại kết nối vào pool
   }
 });
