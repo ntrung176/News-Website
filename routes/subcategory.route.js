@@ -5,31 +5,43 @@ const subcategoryModel = require('../models/subcategory.model');
 const router = express.Router();
 
 router.get('/:id', async function (req, res) {
-    if (req.isAuthenticated() && req.user.Permission === 3) {
-        const id = +req.params.id || -1;
-        const list = await subcategoryModel.single(id);
-        for (var i = 0; i < list.length; i++) {
-            if (list[i].Del == 1) {
-                list[i].Xoa = true;
-            } else {
-                list[i].Xoa = false;
-            }
+    try {
+        if (!req.isAuthenticated() || req.user.Permission !== 3) {
+            return res.redirect('/');
         }
-        const rows = await categoryModel.single(id);
-        if (rows.length === 0)
-            return res.send('Invalid parameter.');
-        const category = rows[0];
 
+        const id = parseInt(req.params.id, 10);
+        if (isNaN(id) || id <= 0) {
+            return res.status(400).send('Invalid parameter.');
+        }
+
+        const list = await subcategoryModel.single(id);
+        if (!list) {
+            return res.status(404).send('No subcategories found.');
+        }
+
+        const processedList = list.map(item => ({
+            ...item,
+            Xoa: item.Del === 1,
+        }));
+
+        const rows = await categoryModel.single(id);
+        if (rows.length === 0) {
+            return res.status(400).send('Invalid category.');
+        }
+
+        const category = rows[0];
         res.render('vwSubCate/list', {
-            categories: list,
+            categories: processedList,
             category,
-            xoa: list.Xoa === 1,
-            empty: list.length === 0
+            xoa: processedList.some(item => item.Xoa),
+            empty: processedList.length === 0,
         });
-    } else {
-        res.redirect('/')
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
     }
-})
+});
 
 router.get('/:id/add', async function (req, res) {
     if (req.isAuthenticated() && req.user.Permission === 3) {

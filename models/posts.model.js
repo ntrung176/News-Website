@@ -79,5 +79,22 @@ module.exports = {
         PostID: id
       }
       return db.del(TBL_POSTS, condition);
-    }
+    },
+    update: function (data) {
+      const { PostTitle, SumContent, Content, source, linksource, Premium, PostID } = data;
+      const sql = `
+          UPDATE ${TBL_POSTS} 
+          SET 
+              PostTitle = ?, 
+              SumContent = ?, 
+              Content = ?, 
+              source = ?, 
+              linksource = ?, 
+              Premium = ? 
+          WHERE PostID = ?
+      `;
+      
+      // Đảm bảo rằng các tham số được truyền đúng thứ tự
+      return db.load(sql, [PostTitle, SumContent, Content, source, linksource, Premium, PostID]);
+  }
 }

@@ -39,4 +39,5 @@ module.exports = {
     search: function (value) {
         return db.load(`select DISTINCT * from ${TBL_POSTS} where PostTitle like N'%${value}%' OR SumContent like N'%${value}%' OR Content like N'%${value}%' ORDER BY Premium DESC`);
     },
+    
 }
