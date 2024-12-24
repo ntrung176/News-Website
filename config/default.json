@@ -2,7 +2,7 @@
   "mysql": {
     "host": "localhost",
     "user": "root",
-    "password": "01012004",
+    "password": "",
     "database": "qltt",
     "connectionLimit": 50
   }
