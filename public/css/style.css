@@ -126,6 +126,14 @@ a.click:hover {
   justify-content: flex-end;
 }
 
+img {
+  max-width: 100%; /* Đảm bảo ảnh không vượt quá chiều rộng của vùng chứa */
+  height: auto; /* Giữ nguyên tỷ lệ của hình ảnh */
+  display: block; /* Loại bỏ khoảng trắng bên dưới hình ảnh nếu có */
+  margin: 0 auto; /* Căn giữa hình ảnh */
+  object-fit: contain; /* Đảm bảo ảnh vừa khít vùng chứa mà không bị cắt */
+}
+
 /* Nút Facebook */
 .facebook {
   background-color: #3b5998;
