@@ -84,21 +84,14 @@ router.get("/", async function (req, res) {
 });
 
 router.get("/cat/:cid", async function (req, res) {
-  if (req.isAuthenticated() && req.user.Permission > 1) {
-    const cid = +req.params.cid || -1;
+  if (req.isAuthenticated() && req.user.Permission >1) {
+    const cid = +req.params.cid || -1; // Lấy CID từ URL
 
     // Lấy danh sách bài viết thuộc category ID (CID)
-    const posts = await postModel.allByCategoryID(cid);
+    const posts = await postModel.getByCategoryID(cid);
     const category = await categoryModel.singleByCID(cid);
 
-    if (!category || !category.length) {
-      return res.render("vwPosts/category", {
-        empty: true,
-        posts: [],
-        category: null,
-      });
-    }
-
+    // Xử lý dữ liệu bài viết
     for (let i = 0; i < posts.length; i++) {
       posts[i].Time = moment(posts[i].TimePost, "YYYY-MM-DD hh:mm:ss").format(
         "hh:mmA DD/MM/YYYY"
@@ -110,15 +103,17 @@ router.get("/cat/:cid", async function (req, res) {
       posts[i].UserName = uid_post;
     }
 
+    // Render các bài viết thuộc chuyên mục
     res.render("vwPosts/category", {
       posts,
       empty: posts.length === 0,
-      category: category[0],
+      category: category[0],  // Truyền category cho template
     });
   } else {
     res.redirect("/");
   }
 });
+
 
 router.get("/status/:pid", async function (req, res) {
   if (req.isAuthenticated() && req.user.Permission > 1) {
