@@ -18,6 +18,9 @@ module.exports = {
     singleByCID: function (cid) {
       return db.load(`select * from ${TBL_POSTS} where CID = ${cid}`);
     },
+    getByCategoryID: function (cid) {
+      return db.load(`SELECT * FROM ${TBL_POSTS} WHERE CID = ${cid} AND Xoa = 0`);
+    },
     singleByCIDXuatBan: function (cid) {
       return db.load(`select * from ${TBL_POSTS} where CID = ${cid} AND Duyet = 3 ORDER BY TimePost DESC`);
     },
