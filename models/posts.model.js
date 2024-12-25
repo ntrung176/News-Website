@@ -102,7 +102,9 @@ module.exports = {
           Content = ?,
           source = ?,
           linksource = ?,
-          Premium = ?
+          Premium = ?,
+          PostDate = ?,
+          TimePost=?
         WHERE PostID = ?
       `;
   
@@ -112,7 +114,9 @@ module.exports = {
         post.Content,        // Nội dung chính
         post.source,         // Nguồn bài viết
         post.linksource,     // Link nguồn bài viết
-        post.Premium,        // Premium (0 hoặc 1)
+        post.Premium,
+        post.PostDate, 
+        post.TimePost,       // Premium (0 hoặc 1)
         post.PostID,         // ID bài viết
       ]);
     }
