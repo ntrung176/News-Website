@@ -85,6 +85,7 @@ router.post("/post", upload.single('fileUpload'), async function (req, res) {
   if (Array.isArray(req.body.Premium)) {
     req.body.Premium = req.body.Premium[0];  // Lấy giá trị đầu tiên của mảng (nếu là mảng)
   }
+  req.body.UID = parseInt(req.body.UID, 10); 
 
   // Xử lý SCID và CID
   const subcategory = await subcategoryModel.single2(req.body.SCID);

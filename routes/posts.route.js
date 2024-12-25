@@ -542,5 +542,76 @@ router.post('/upload/:id', upload.single('fuMain'), (req, res) => {
   // Sau khi upload thành công, chuyển hướng hoặc trả về kết quả
   res.redirect(`/admin/posts/edit/${postID}`); // Ví dụ: quay lại trang chỉnh sửa bài viết
 });
+router.get('/del/:id', async function(req, res) {
+  if (req.isAuthenticated() && req.user.Permission === 3) {
+      const id = +req.params.id || -1;
+
+      await postModel.del(id);
+      res.redirect('/admin/posts/');
+  } else {
+      res.redirect('/')
+  }
+})
+router.post('/del/:id', async function (req, res) {
+  if (req.isAuthenticated() && req.user.Permission === 3) { // Kiểm tra quyền người dùng
+      const id = +req.params.id || -1; // Lấy ID bài viết từ URL
+      try {
+          await postModel.del(id); // Gọi hàm xóa bài viết trong model
+          res.redirect('/admin/posts'); // Chuyển hướng sau khi xóa thành công
+      } catch (error) {
+          console.error('Error deleting post:', error);
+          res.status(500).send('An error occurred while deleting the post.');
+      }
+  } else {
+      res.redirect('/'); // Người dùng không có quyền thì chuyển hướng về trang chủ
+  }
+});
+router.get('/restore/:id', async function(req, res) {
+  if (req.isAuthenticated() && req.user.Permission === 3) {
+      const id = +req.params.id || -1;
+
+      await postModel.restore(id);
+      res.redirect('/admin/posts/');
+  } else {
+      res.redirect('/')
+  }
+});
+router.post('/restore/:id', async function (req, res) {
+  if (req.isAuthenticated() && req.user.Permission === 3) { // Kiểm tra quyền
+      const id = +req.params.id || -1; // Lấy ID từ URL
+      try {
+          await postModel.restore(id); // Gọi hàm khôi phục bài viết trong model
+          res.redirect('/admin/posts/'); // Chuyển hướng sau khi khôi phục
+      } catch (error) {
+          console.error('Error restoring post:', error);
+          res.status(500).send('An error occurred while restoring the post.');
+      }
+  } else {
+      res.redirect('/'); // Người dùng không có quyền thì chuyển hướng về trang chủ
+  }
+});
+router.get('/delete/:id', async function (req, res) {
+  if (req.isAuthenticated() && req.user.Permission === 3) {
+      const id = +req.params.id || -1;
+      await postModel.del2(id);
+      res.redirect('/admin/posts/');
+  } else {
+      res.redirect('/')
+  }
+});
+router.post('/delete', async function (req, res) {
+  if (req.isAuthenticated() && req.user.Permission === 3) {
+    const id = +req.body.id || -1; // Lấy ID từ body
+    try {
+      await postModel.del2(id); // Gọi hàm xóa
+      res.status(200).json({ success: true, message: 'Post deleted successfully.' });
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      res.status(500).json({ success: false, message: 'Failed to delete post.' });
+    }
+  } else {
+    res.status(403).json({ success: false, message: 'Unauthorized.' });
+  }
+});
 
 module.exports = router;
