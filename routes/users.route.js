@@ -40,7 +40,7 @@ router.get('/edit/:id', async function(req, res) {
             } else if (user.Permission === 3) {
                 user.ChucVu = 'Quản trị viên';
             }
-        const category = await categoryModel.all2();
+        const category = await categoryModel.all2(id);
         const categoryManager = await utilsModel.showCategoryManagerByUID(id);
         for (var i = 0; i < categoryManager.length; i++) {
             const category = await categoryModel.singleByCID(categoryManager[i].CID);

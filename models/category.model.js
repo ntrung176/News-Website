@@ -42,14 +42,19 @@ module.exports = {
     return db.patch(TBL_CATEGORIES, entity, condition);
   },
   singleByCID: async function (id) {
-    const rows = await db.load(`select * from ${TBL_CATEGORIES} where CID = '${id}'`);
-    if (rows.length === 0)
-      return null;
+    return  db.load(`select * from ${TBL_CATEGORIES} where CID = '${id}'`);
 
-    return rows[0];
   },
-  all2: function () {
-    return db.load(`select * from ${TBL_CATEGORIES} where Xoa = 0 and cid NOT IN (select cid from ${TBL_CATEGORYMANAGER})`);
+  all2: function (userID) {
+    return db.load(`SELECT * 
+      FROM ${TBL_CATEGORIES} 
+      WHERE Xoa = 0 
+        AND cid NOT IN (
+          SELECT cid 
+          FROM ${TBL_CATEGORYMANAGER} 
+          WHERE userid = ${userID}
+        )
+    `);
   },
   del: function (id) {
     const condition = {

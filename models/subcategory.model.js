@@ -43,6 +43,11 @@ module.exports = {
         };
         return db.patch(TBL_SUBCATEGORIES, d ,condition);
     },
+    getByCID: async function(cid) {
+      const sql = 'SELECT SCID, SCName FROM subcategories WHERE CID = ?';
+      const result = await db.query(sql, [cid]);
+      return result; // Trả về danh sách chuyên mục con
+  },
     del2: function (id) {
       const condition = {
         SCID: id
