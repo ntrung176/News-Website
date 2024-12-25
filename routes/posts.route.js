@@ -408,21 +408,17 @@ router.post("/update", async function (req, res) {
   const post = {
     PostID: req.body.PostID, // Dữ liệu này từ input hidden
     PostTitle: req.body.PostTitle,
-<<<<<<< HEAD
+
     TimePost: req.body.TimePost || new Date().toISOString().slice(0, 19).replace('T', ' '), // Xử lý checkbox
-=======
->>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
+
+
     SumContent: req.body.SumContent,
     Content: req.body.Content,
     source: req.body.source,
     linksource: req.body.linksource,
-<<<<<<< HEAD
-    Premium: req.body.Premium ? 1 : 0
-=======
     Premium: req.body.Premium ? 1 : 0,
-    TimePost: req.body.F_TimePublic || new Date().toISOString().slice(0, 19).replace('T', ' '),
-    PostID: req.body.PostID // Xử lý checkbox
->>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
+    TimePost: req.body.F_TimePublic || new Date().toISOString().slice(0, 19).replace('T', ' ')
+
   };
 
   // Kiểm tra tính hợp lệ của dữ liệu
