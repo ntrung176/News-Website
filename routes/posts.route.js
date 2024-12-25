@@ -413,6 +413,7 @@ router.post("/update", async function (req, res) {
     source: req.body.source,
     linksource: req.body.linksource,
     Premium: req.body.Premium ? 1 : 0,
+    TimePost: req.body.F_TimePublic || new Date().toISOString().slice(0, 19).replace('T', ' '),
     PostID: req.body.PostID // Xử lý checkbox
   };
 
