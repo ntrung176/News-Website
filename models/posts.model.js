@@ -77,27 +77,43 @@ module.exports = {
         };
         return db.patch(TBL_POSTS, d ,condition);
     },
+    updateCategory: function (postID, categoryID) {
+      const sql = `
+        UPDATE ${TBL_POSTS}
+        SET CID = ?
+        WHERE PostID = ?
+      `;
+    
+      return db.execute(sql, [categoryID, postID]);
+    },
+    
     del2: function (id) {
       const condition = {
         PostID: id
       }
       return db.del(TBL_POSTS, condition);
     },
-    update: function (data) {
-      const { PostTitle, SumContent, Content, source, linksource, Premium, PostID } = data;
+    update: async (post) => {
       const sql = `
-          UPDATE ${TBL_POSTS} 
-          SET 
-              PostTitle = ?, 
-              SumContent = ?, 
-              Content = ?, 
-              source = ?, 
-              linksource = ?, 
-              Premium = ? 
-          WHERE PostID = ?
+        UPDATE posts
+        SET
+          PostTitle = ?,
+          SumContent = ?,
+          Content = ?,
+          source = ?,
+          linksource = ?,
+          Premium = ?
+        WHERE PostID = ?
       `;
-      
-      // Đảm bảo rằng các tham số được truyền đúng thứ tự
-      return db.load(sql, [PostTitle, SumContent, Content, source, linksource, Premium, PostID]);
-  }
+  
+      return db.execute(sql, [
+        post.PostTitle,      // Tên bài viết
+        post.SumContent,     // Nội dung tóm tắt
+        post.Content,        // Nội dung chính
+        post.source,         // Nguồn bài viết
+        post.linksource,     // Link nguồn bài viết
+        post.Premium,        // Premium (0 hoặc 1)
+        post.PostID,         // ID bài viết
+      ]);
+    }
 }
