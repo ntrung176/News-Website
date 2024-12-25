@@ -22,12 +22,12 @@ app.use(
     extended: true,
   })
 );
-<<<<<<< HEAD
+
 app.use(express.json());
-=======
+
 app.use(express.json()); 
 
->>>>>>> df3cdaf (Cập nhật editor,admin, writer)
+
 
 app.engine(
   "hbs",
@@ -296,11 +296,8 @@ app.use("/writerpanel", writerPanelRouter);
 const editorPanelRouter = require("./routes/editorpanel.route");
 app.use("/editorpanel", editorPanelRouter);
 
-<<<<<<< HEAD
-const userModel = require("./models/user.model");
 
-=======
->>>>>>> df3cdaf (Cập nhật editor,admin, writer)
+
 app
   .route("/dangnhap")
   .get(function (req, res) {
@@ -312,7 +309,7 @@ app
       successRedirect: "/",
     })
   );
-<<<<<<< HEAD
+
 app.use(express.urlencoded({ extended: true }));
 app
   .route("/quenmatkhau")
@@ -360,7 +357,7 @@ app.route("/search").get(function (req, res) {
 app.route("/edit").get(function (req, res) {
   res.render("vwAccount/edit");
 });
-=======
+
 app.get
 app.get("/quenmatkhau", function (req, res) {
   // Kiểm tra nếu người dùng đã đăng nhập
@@ -415,7 +412,7 @@ app.post("/quenmatkhau", async (req, res) => {
   .get(function (req, res) {
     res.render("vwAccount/edit");
   });
->>>>>>> df3cdaf (Cập nhật editor,admin, writer)
+
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {
