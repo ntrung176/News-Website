@@ -21,12 +21,9 @@ app.use(
 );
 
 app.use(express.json());
-<<<<<<< HEAD
- 
-=======
 
-app.use(express.json());
->>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
+
+
 
 app.engine(
   "hbs",
@@ -296,11 +293,7 @@ app.use("/writerpanel", writerPanelRouter);
 const editorPanelRouter = require("./routes/editorpanel.route");
 app.use("/editorpanel", editorPanelRouter);
 
-<<<<<<< HEAD
 
-
-=======
->>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
 app
   .route("/dangnhap")
   .get(function (req, res) {
@@ -361,11 +354,7 @@ app.route("/edit").get(function (req, res) {
   res.render("vwAccount/edit");
 });
 
-<<<<<<< HEAD
-app.get
-=======
-app.get;
->>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
+
 app.get("/quenmatkhau", function (req, res) {
   // Kiểm tra nếu người dùng đã đăng nhập
   if (req.isAuthenticated()) {
@@ -416,7 +405,7 @@ app.post("/quenmatkhau", async (req, res) => {
       .json({ success: false, message: "Có lỗi xảy ra, vui lòng thử lại!" });
   }
 });
-<<<<<<< HEAD
+
   app
   .route("/search")
   .get(function (req, res) {
@@ -428,14 +417,14 @@ app.post("/quenmatkhau", async (req, res) => {
     res.render("vwAccount/edit");
   });
 
-=======
+
 app.route("/search").get(function (req, res) {
   res.render("search");
 });
 app.route("/edit").get(function (req, res) {
   res.render("vwAccount/edit");
 });
->>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
+
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {
