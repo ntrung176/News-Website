@@ -74,7 +74,7 @@ const subcategoryModel = require("./models/subcategory.model");
 const postModel = require("./models/posts.model");
 const _postModel = require("./models/_post.model");
 const commentModel = require("./models/comment.model");
-const userModel = require("News-Website/models/user.model");
+const userModel = require("./models/user.model");
 
 // Facebook Login
 passport.use(
