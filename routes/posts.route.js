@@ -84,7 +84,7 @@ router.get("/", async function (req, res) {
 });
 
 router.get("/cat/:cid", async function (req, res) {
-  if (req.isAuthenticated() && req.user.Permission >1) {
+  if (req.isAuthenticated() && req.user.Permission >0) {
     const cid = +req.params.cid || -1; // Lấy CID từ URL
 
     // Lấy danh sách bài viết thuộc category ID (CID)
@@ -283,23 +283,161 @@ router.get("/move/:pid", async function (req, res) {
     res.redirect("/"); // Redirect if the user is not authenticated or lacks permission
   }
 });
-router.post("/update", async function (req, res) {
-  const post = {
-      PostTitle: req.body.PostTitle,
-      SumContent: req.body.SumContent,
-      Content: req.body.Content,
-      source: req.body.source,
-      linksource: req.body.linksource,
-      Premium: req.body.Premium ? 1 : 0,
-      PostID: req.body.PostID,  // If the Premium checkbox is checked, set to 1, else 0
-  };
+router.post("/move/:pid/tocat/:cid", async function (req, res) {
+  if (req.isAuthenticated() && req.user.Permission > 1) {
+    const pid = +req.params.pid || -1;
+    const cid = +req.params.cid || -1;
+
+    const pst = await postModel.singleByPostID(pid);
+
+    if (!pst.length) {
+      return res.redirect("/admin/posts");
+    }
+
+    // Cập nhật CID cho bài viết
+    const updateResult = await postModel.updateCategory(pid, cid);
+
+    if (updateResult) {
+      req.flash("success", "Post has been moved to the new category.");
+      res.redirect(`/admin/posts/${pid}`);
+    } else {
+      req.flash("error", "Failed to move the post.");
+      res.redirect(`/admin/posts/${pid}`);
+    }
+  } else {
+    res.redirect("/");  // Redirect if not authenticated or not authorized
+  }
+});
+router.get("/move/:pid/tocat/:cid", async function (req, res) {
+  const pid = +req.params.pid || -1;
+  const cid = +req.params.cid || -1;
+
+  if (pid === -1 || cid === -1) {
+    return res.status(400).send("Invalid Post ID or Category ID.");
+  }
 
   try {
-      await postModel.update(post);  // Call the update method
-      res.redirect(`/admin/posts/${post.PostID}`);  // Redirect to the post view page after update
+    // Kiểm tra bài viết có tồn tại
+    const pst = await postModel.singleByPostID(pid);
+    if (!pst || !pst.length) {
+      return res.status(404).send("Post not found.");
+    }
+
+    // Kiểm tra chuyên mục có tồn tại
+    const category = await categoryModel.singleByCID(cid);
+    if (!category || !category.length) {
+      return res.status(404).send("Category not found.");
+    }
+
+    // Cập nhật chuyên mục cho bài viết
+    const post = pst[0];
+    post.CID = cid;  // Cập nhật chuyên mục cho bài viết
+    await postModel.update(post);
+
+    // Chuyển hướng về trang bài viết sau khi di chuyển
+    res.redirect(`/admin/posts/${post.PostID}`);
   } catch (error) {
-      console.error("Error updating post:", error);
-      res.status(500).send("Error updating post");
+    console.error("Error moving post:", error);
+    res.status(500).send("Error moving post.");
+  }
+});
+
+router.get("/move/:pid/tosub/:scid", async function (req, res) {
+  const pid = +req.params.pid || -1;
+  const scid = +req.params.scid || -1;
+
+  if (pid === -1 || scid === -1) {
+    return res.status(400).send("Invalid Post ID or Subcategory ID.");
+  }
+
+  try {
+    // Kiểm tra bài viết có tồn tại
+    const pst = await postModel.singleByPostID(pid);
+    if (!pst || !pst.length) {
+      return res.status(404).send("Post not found.");
+    }
+
+    // Kiểm tra phân loại con có tồn tại
+    const subcategory = await subcategoryModel.single(scid);
+    if (!subcategory || !subcategory.length) {
+      return res.status(404).send("Subcategory not found.");
+    }
+
+    // Cập nhật phân loại con cho bài viết
+    const post = pst[0];
+    post.SCID = scid;
+    await postModel.update(post);
+
+    // Chuyển hướng về trang bài viết sau khi di chuyển
+    res.redirect(`/admin/posts/${post.PostID}`);
+  } catch (error) {
+    console.error("Error moving post:", error);
+    res.status(500).send("Error moving post.");
+  }
+});
+router.post("/move/:pid/tosub/:scid", async function (req, res) {
+  if (req.isAuthenticated() && req.user.Permission > 1) {
+    const pid = +req.params.pid || -1;
+    const scid = +req.params.scid || -1;
+
+    const pst = await postModel.updateSubcategory(pid);
+
+    if (!pst.length) {
+      return res.redirect("/admin/posts");
+    }
+
+    // Cập nhật SCID cho bài viết
+    const updateResult = await postModel.move(pid, scid);
+
+    if (updateResult) {
+      req.flash("success", "Post has been moved to the new subcategory.");
+      res.redirect(`/admin/posts/${pid}`);
+    } else {
+      req.flash("error", "Failed to move the post.");
+      res.redirect(`/admin/posts/${pid}`);
+    }
+  } else {
+    res.redirect("/");  // Redirect if not authenticated or not authorized
+  }
+});
+router.post("/update", async function (req, res) {
+  // Debug dữ liệu từ req.body để kiểm tra
+  console.log("Received req.body:", req.body);
+
+  // Lấy dữ liệu từ form
+  const post = {
+    PostID: req.body.PostID, // Dữ liệu này từ input hidden
+    PostTitle: req.body.PostTitle,
+    SumContent: req.body.SumContent,
+    Content: req.body.Content,
+    source: req.body.source,
+    linksource: req.body.linksource,
+    Premium: req.body.Premium ? 1 : 0,
+    PostID: req.body.PostID // Xử lý checkbox
+  };
+
+  // Kiểm tra tính hợp lệ của dữ liệu
+  if (!post.PostID) {
+    return res.status(400).send("PostID is required.");
+  }
+  if (!post.PostTitle || !post.Content) {
+    return res.status(400).send("PostTitle and Content are required.");
+  }
+
+  try {
+    // Gọi hàm cập nhật dữ liệu từ model
+    const result = await postModel.update(post);
+
+    // Kiểm tra kết quả cập nhật
+    if (result.affectedRows === 0) {
+      return res.status(404).send("Post not found or no changes were made.");
+    }
+
+    // Redirect về trang chi tiết bài viết
+    res.redirect(`/admin/posts/${post.PostID}`);
+  } catch (error) {
+    console.error("Error updating post:", error);
+    res.status(500).send("Error updating post.");
   }
 });
 router.get('/:id', async function (req, res) {
