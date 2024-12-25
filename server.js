@@ -9,13 +9,10 @@ const bcrypt = require("bcryptjs");
 const moment = require("moment");
 const mysql = require("mysql2");
 require("express-async-errors");
-const userModel = require("News-Website/models/user.model");
 
-require("dotenv").config(); // Đảm bảo rằng bạn đã cài đặt dotenv và nạp các biến môi trường từ file .env
+require("dotenv").config();
 
 const app = express();
-
-// Kiểm tra và tạo tài khoản admin nếu cần
 
 app.use(
   express.urlencoded({
@@ -24,7 +21,12 @@ app.use(
 );
 
 app.use(express.json());
+<<<<<<< HEAD
  
+=======
+
+app.use(express.json());
+>>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
 
 app.engine(
   "hbs",
@@ -76,6 +78,7 @@ const subcategoryModel = require("./models/subcategory.model");
 const postModel = require("./models/posts.model");
 const _postModel = require("./models/_post.model");
 const commentModel = require("./models/comment.model");
+const userModel = require("./models/user.model");
 
 // Facebook Login
 passport.use(
@@ -293,8 +296,11 @@ app.use("/writerpanel", writerPanelRouter);
 const editorPanelRouter = require("./routes/editorpanel.route");
 app.use("/editorpanel", editorPanelRouter);
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
 app
   .route("/dangnhap")
   .get(function (req, res) {
@@ -355,11 +361,15 @@ app.route("/edit").get(function (req, res) {
   res.render("vwAccount/edit");
 });
 
+<<<<<<< HEAD
 app.get
+=======
+app.get;
+>>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
 app.get("/quenmatkhau", function (req, res) {
   // Kiểm tra nếu người dùng đã đăng nhập
   if (req.isAuthenticated()) {
-    return res.redirect("/");  // Đã đăng nhập, chuyển hướng về trang chủ
+    return res.redirect("/"); // Đã đăng nhập, chuyển hướng về trang chủ
   }
 
   // Nếu chưa đăng nhập, hiển thị trang quên mật khẩu
@@ -367,38 +377,46 @@ app.get("/quenmatkhau", function (req, res) {
 });
 
 app.post("/quenmatkhau", async (req, res) => {
-  const phone = req.body.phone;  // Số điện thoại người dùng nhập
-  const newPassword = req.body.new_password;  // Mật khẩu mới người dùng nhập
+  const phone = req.body.phone; // Số điện thoại người dùng nhập
+  const newPassword = req.body.new_password; // Mật khẩu mới người dùng nhập
 
-  console.log("Số điện thoại:", phone);  // Kiểm tra xem dữ liệu đã gửi đúng chưa
+  console.log("Số điện thoại:", phone); // Kiểm tra xem dữ liệu đã gửi đúng chưa
   console.log("Mật khẩu mới:", newPassword);
 
   try {
     // Tìm người dùng theo số điện thoại
-    const user = await User.singleByPhone(phone);  // Sử dụng hàm singleByPhone để tìm người dùng
+    const user = await User.singleByPhone(phone); // Sử dụng hàm singleByPhone để tìm người dùng
 
     if (!user) {
       // Nếu không tìm thấy người dùng với số điện thoại này
-      return res.status(400).json({ success: false, message: "Số điện thoại không tồn tại." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Số điện thoại không tồn tại." });
     }
 
     // Mã hóa mật khẩu mới trước khi lưu vào cơ sở dữ liệu (nếu cần)
-    const hashedPassword = bcrypt.hashSync(newPassword, 10);  // Sử dụng bcrypt để mã hóa mật khẩu
+    const hashedPassword = bcrypt.hashSync(newPassword, 10); // Sử dụng bcrypt để mã hóa mật khẩu
 
     // Cập nhật mật khẩu cho người dùng
     await User.update(
-      { Password_hash: hashedPassword },  // Mật khẩu đã mã hóa
-      { where: { Phone: phone } }         // Cập nhật người dùng có số điện thoại này
+      { Password_hash: hashedPassword }, // Mật khẩu đã mã hóa
+      { where: { Phone: phone } } // Cập nhật người dùng có số điện thoại này
     );
 
     // Trả về phản hồi thành công
-    return res.json({ success: true, message: "Mật khẩu đã được đặt lại thành công!" });
+    return res.json({
+      success: true,
+      message: "Mật khẩu đã được đặt lại thành công!",
+    });
   } catch (error) {
     // Xử lý lỗi nếu có
     console.error("Error:", error);
-    return res.status(500).json({ success: false, message: "Có lỗi xảy ra, vui lòng thử lại!" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Có lỗi xảy ra, vui lòng thử lại!" });
   }
 });
+<<<<<<< HEAD
   app
   .route("/search")
   .get(function (req, res) {
@@ -410,6 +428,14 @@ app.post("/quenmatkhau", async (req, res) => {
     res.render("vwAccount/edit");
   });
 
+=======
+app.route("/search").get(function (req, res) {
+  res.render("search");
+});
+app.route("/edit").get(function (req, res) {
+  res.render("vwAccount/edit");
+});
+>>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {
@@ -492,7 +518,6 @@ app.use(function (err, req, res, next) {
 });
 // admin tạo cho editor
 //
-
 
 const port = process.env.PORT;
 app.listen(port, "0.0.0.0", () => {

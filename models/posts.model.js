@@ -98,25 +98,48 @@ module.exports = {
         UPDATE posts
         SET
           PostTitle = ?,
+<<<<<<< HEAD
           TimePost=?,
+=======
+>>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
           SumContent = ?,
           Content = ?,
           source = ?,
           linksource = ?,
+<<<<<<< HEAD
           Premium = ?
+=======
+          Premium = ?,
+          PostDate = ?,
+          TimePost=?
+>>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
         WHERE PostID = ?
       `;
   
       return db.execute(sql, [
+<<<<<<< HEAD
         post.PostID,   
         post.PostTitle, 
         post.TimePost,      // Tên bài viết
+=======
+        post.PostTitle,      // Tên bài viết
+>>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
         post.SumContent,     // Nội dung tóm tắt
         post.Content,        // Nội dung chính
         post.source,         // Nguồn bài viết
         post.linksource,     // Link nguồn bài viết
+<<<<<<< HEAD
         post.Premium
     
       ]);
     }
 }
+=======
+        post.Premium,
+        post.PostDate, 
+        post.TimePost,       // Premium (0 hoặc 1)
+        post.PostID,         // ID bài viết
+      ]);
+    }
+}
+>>>>>>> f846b0495725f30d4dc030f86d187fa0c9868923
